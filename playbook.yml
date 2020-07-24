@@ -1,0 +1,20 @@
+---
+
+- hosts: 'localhost'
+  roles:
+    - 'kewlfft.aur'
+    - 'grub'
+    - 'initramfs'
+    - 'mhwd'
+    - 'nvidia'
+    - 'vfio'
+    - 'libvirt'
+    - 'sddm'
+    - 'java'
+    - 'dev-environ'
+    - 'web-browsers'
+    - 'messaging'
+    - 'keeweb'
+    - 'dotfiles'
+    - 'pulseaudio'
+    - 'user'

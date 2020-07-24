@@ -1,0 +1,13 @@
+---
+
+mhwd__packages:
+  - 'mhwd'
+  - 'mhwd-nvidia-440xx'
+
+mhwd__dependent_packages:
+  - 'bash'
+  - 'gawk'
+
+mhwd__video_drivers:
+  - 'video-nvidia-440xx'
+  - 'video-modesetting'

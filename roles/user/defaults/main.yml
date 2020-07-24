@@ -1,0 +1,15 @@
+---
+
+user__packages:
+  - 'zsh'
+
+user__dependent_packages:
+  - 'openssh'
+
+user__shell: '/bin/zsh'
+
+user__ssh_key_type: 'ecdsa'
+
+user__ssh_key_bits: 521
+
+user__ssh_key_file: '.ssh/id_ecdsa'

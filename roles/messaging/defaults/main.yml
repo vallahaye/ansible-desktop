@@ -1,0 +1,9 @@
+---
+
+messaging__packages:
+  - 'caprine'
+  - 'discord'
+  - 'mumble'
+  - 'thunderbird'
+
+messaging__dependent_packages: []

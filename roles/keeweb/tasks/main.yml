@@ -1,0 +1,22 @@
+---
+
+- name: Install keeweb packages
+  pacman:
+    name: '{{ q("flattened", (keeweb__packages +
+                              keeweb__dependent_packages)) }}'
+    state: 'present'
+  register: keeweb__register_pacman
+  until: keeweb__register_pacman is succeeded
+
+- name: Install keeweb AUR packages
+  aur:
+    name: '{{ keeweb__aur_packages }}'
+    state: 'present'
+  register: keeweb__register_aur
+  until: keeweb__register_aur is succeeded
+  become: False
+
+- name: Manage entries in /etc/pam.d/sddm
+  blockinfile:
+    path: '/etc/pam.d/sddm'
+    block: '{{ lookup("file", "sddm-pam") }}'

@@ -1,0 +1,6 @@
+---
+
+web_browsers__packages:
+  - 'chromium'
+
+web_browsers__dependent_packages: []

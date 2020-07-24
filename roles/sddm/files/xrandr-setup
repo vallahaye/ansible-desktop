@@ -1,0 +1,2 @@
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto --output DP-0 --off --output HDMI-0 --off

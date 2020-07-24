@@ -1,0 +1,16 @@
+---
+
+libvirt__packages:
+  - 'qemu'
+  - 'libvirt'
+  - 'edk2-ovmf'
+  - 'virt-manager'
+
+libvirt__dependent_packages:
+  - 'bash'
+  - 'cpupower'
+  - 'gawk'
+  - 'run-parts'
+  - 'xorg-xrandr'
+  - 'ebtables'
+  - 'dnsmasq'

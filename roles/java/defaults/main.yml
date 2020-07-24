@@ -1,0 +1,9 @@
+---
+
+java__jdk_version: 11
+
+java__packages:
+  - 'jdk{{ java__jdk_version }}-openjdk'
+  - 'openjdk{{ java__jdk_version }}-doc'
+
+java__dependent_packages: []

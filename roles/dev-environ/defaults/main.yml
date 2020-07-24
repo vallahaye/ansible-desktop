@@ -1,0 +1,19 @@
+---
+
+dev_environ__packages:
+  - 'ansible-lint'
+  - 'cmake'
+  - 'code'
+  - 'crun'
+  - 'emacs'
+  - 'jq'
+  - 'maven'
+  - 'meld'
+  - 'podman'
+  - 'shellcheck'
+  - 'texlive-most'
+  - 'texlive-lang'
+  - 'vagrant'
+  - 'wine'
+
+dev_environ__dependent_packages: []

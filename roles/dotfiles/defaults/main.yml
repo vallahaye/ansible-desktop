@@ -1,0 +1,12 @@
+---
+
+dotfiles__packages: []
+
+dotfiles__dependent_packages:
+  - 'git'
+  - 'make'
+  - 'stow'
+
+dotfiles__repo: 'https://github.com/vallahaye/dotfiles.git'
+
+dotfiles__dest_path: '~/.dotfiles'

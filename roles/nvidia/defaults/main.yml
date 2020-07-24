@@ -1,0 +1,8 @@
+---
+
+nvidia__packages: []
+
+nvidia__dependent_packages:
+  - 'bash'
+  - 'gawk'
+  - 'pciutils'

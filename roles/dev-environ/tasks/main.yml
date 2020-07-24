@@ -1,0 +1,9 @@
+---
+
+- name: Install dev-environ packages
+  pacman:
+    name: '{{ q("flattened", (dev_environ__packages +
+                              dev_environ__dependent_packages)) }}'
+    state: 'present'
+  register: dev_environ__register_pacman
+  until: dev_environ__register_pacman is succeeded

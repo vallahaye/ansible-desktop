@@ -1,0 +1,21 @@
+---
+
+- name: Install user packages
+  pacman:
+    name: '{{ q("flattened", (user__packages + user__dependent_packages)) }}'
+    state: 'present'
+  register: user__register_pacman
+  until: user__register_pacman is succeeded
+
+- name: Set login shell
+  user:
+    name: '{{ ansible_user }}'
+    shell: '{{ user__shell }}'
+
+- name: Generate SSH keypair
+  user:
+    name: '{{ ansible_user }}'
+    generate_ssh_key: True
+    ssh_key_type: '{{ user__ssh_key_type }}'
+    ssh_key_bits: '{{ user__ssh_key_bits }}'
+    ssh_key_file: '{{ user__ssh_key_file }}'

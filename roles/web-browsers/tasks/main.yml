@@ -1,0 +1,14 @@
+---
+
+- name: Install web-browsers packages
+  pacman:
+    name: '{{ q("flattened", (web_browsers__packages +
+                              web_browsers__dependent_packages)) }}'
+    state: 'present'
+  register: web_browsers__register_pacman
+  until: web_browsers__register_pacman is succeeded
+
+- name: Remove firefox* packages
+  pacman:
+    name: 'firefox*'
+    state: 'absent'

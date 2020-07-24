@@ -1,0 +1,11 @@
+---
+
+keeweb__packages:
+  - 'gnome-keyring'
+  - 'seahorse'
+
+keeweb__dependent_packages:
+  - 'yay'
+
+keeweb__aur_packages:
+  - 'keeweb-desktop-bin'

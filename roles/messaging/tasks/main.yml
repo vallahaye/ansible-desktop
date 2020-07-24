@@ -1,0 +1,9 @@
+---
+
+- name: Install messaging packages
+  pacman:
+    name: '{{ q("flattened", (messaging__packages +
+                              messaging__dependent_packages)) }}'
+    state: 'present'
+  register: messaging__register_pacman
+  until: messaging__register_pacman is succeeded

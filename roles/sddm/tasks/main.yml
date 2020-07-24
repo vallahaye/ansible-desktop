@@ -1,0 +1,21 @@
+---
+
+- name: Install sddm packages
+  pacman:
+    name: '{{ q("flattened", (sddm__packages + sddm__dependent_packages)) }}'
+    state: 'present'
+  register: sddm__register_pacman
+  until: sddm__register_pacman is succeeded
+
+- name: Ensure "Numlock=on" is set in section "[General]" in configuration file
+  ini_file:
+    path: '/etc/sddm.conf'
+    section: 'General'
+    option: 'Numlock'
+    value: 'on'
+    no_extra_spaces: True
+
+- name: Update Xorg startup script
+  blockinfile:
+    path: '/usr/share/sddm/scripts/Xsetup'
+    block: '{{ lookup("file", "xrandr-setup") }}'

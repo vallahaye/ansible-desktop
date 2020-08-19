@@ -38,6 +38,13 @@ $ ansible-galaxy install -r requirements.yml
 $ ansible-playbook -b --ask-become-pass playbook.yml
 ```
 
+## Q&A
+
+A detailed description of the VFIO setup is available [here](https://www.reddit.com/r/VFIO/comments/icn45w/sharing_my_working_gaming_virtual_machine/).
+
+Please, feel free to ask any question related to the topic in the comments
+section.
+
 ## License
 
 © 2020 Valentin Lahaye

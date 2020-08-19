@@ -8,7 +8,7 @@
   register: web_browsers__register_pacman
   until: web_browsers__register_pacman is succeeded
 
-- name: Remove firefox* packages
+- name: Remove firefox package
   pacman:
-    name: 'firefox*'
+    name: 'firefox'
     state: 'absent'

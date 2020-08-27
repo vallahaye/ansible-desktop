@@ -1,0 +1,7 @@
+---
+
+podman__packages:
+  - 'podman'
+  - 'crun'
+
+podman__dependent_packages: []

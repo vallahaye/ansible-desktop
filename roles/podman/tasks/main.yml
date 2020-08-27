@@ -1,0 +1,35 @@
+---
+
+- name: Install podman packages
+  pacman:
+    name: '{{ q("flattened", (podman__packages +
+                              podman__dependent_packages)) }}'
+    state: 'present'
+  register: podman__register_pacman
+  until: podman__register_pacman is succeeded
+
+- name: Install docker symlink
+  file:
+    src: '/usr/bin/podman'
+    dest: '/usr/local/bin/docker'
+    owner: 'root'
+    group: 'root'
+    state: 'link'
+
+- name: Install subuid configuration file
+  template:
+    src: 'subu+gid.j2'
+    dest: '/etc/subuid'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: ['Migrate containers']
+
+- name: Install subgid configuration file
+  template:
+    src: 'subu+gid.j2'
+    dest: '/etc/subgid'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: ['Migrate containers']

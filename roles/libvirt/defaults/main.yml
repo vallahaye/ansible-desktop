@@ -10,6 +10,8 @@ libvirt__dependent_packages:
   - 'bash'
   - 'cpupower'
   - 'gawk'
+  - 'python'
+  - 'python-dbus'
   - 'run-parts'
   - 'xorg-xrandr'
   - 'ebtables'

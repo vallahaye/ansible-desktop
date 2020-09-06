@@ -17,10 +17,9 @@
   notify: ['Restart service']
 
 - name: Install hooks
-  copy:
+  synchronize:
     src: 'hooks/'
     dest: '/etc/libvirt/hooks'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
+    delete: True
+    copy_links: True
   notify: ['Restart service']

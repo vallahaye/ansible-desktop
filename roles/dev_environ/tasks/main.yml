@@ -1,6 +1,6 @@
 ---
 
-- name: Install dev-environ packages
+- name: Install dev_environ packages
   pacman:
     name: '{{ q("flattened", (dev_environ__packages +
                               dev_environ__dependent_packages)) }}'

@@ -1,6 +1,6 @@
 ---
 
-- name: Install web-browsers packages
+- name: Install web_browsers packages
   pacman:
     name: '{{ q("flattened", (web_browsers__packages +
                               web_browsers__dependent_packages)) }}'

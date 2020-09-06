@@ -27,4 +27,7 @@
     path: '/etc/mkinitcpio.conf'
     regexp: '^MODULES='
     line: 'MODULES=({{ initramfs__modules | join(" ") }})'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   notify: ['Generate initial ramdisk environment']

@@ -14,6 +14,7 @@
     dest: '/usr/local/bin/docker'
     owner: 'root'
     group: 'root'
+    mode: '0777'
     state: 'link'
 
 - name: Install subuid configuration file

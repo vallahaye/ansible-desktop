@@ -29,9 +29,11 @@
 - name: Remove extra video drivers
   command: mhwd -r pci '{{ item }}'
   loop: '{{ mhwd__extra_video_drivers }}'
+  when: mhwd__extra_video_drivers|length|bool
 
 - name: Install missing video drivers
   command: mhwd -i pci '{{ item }}'
   loop: '{{ mhwd__missing_video_drivers }}'
   register: mhwd__register_mhwd_i
   until: mhwd__register_mhwd_i is succeeded
+  when: mhwd__missing_video_drivers|length|bool

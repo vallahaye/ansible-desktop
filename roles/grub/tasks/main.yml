@@ -5,6 +5,9 @@
     path: '/etc/default/grub'
     regexp: '^GRUB_TIMEOUT='
     line: 'GRUB_TIMEOUT={{ grub__timeout }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   notify: ['Generate configuration file']
 
 - name: Update timeout behavior
@@ -12,6 +15,9 @@
     path: '/etc/default/grub'
     regexp: '^GRUB_TIMEOUT_STYLE='
     line: 'GRUB_TIMEOUT_STYLE={{ "menu" if grub__show_menu else "hidden" }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   notify: ['Generate configuration file']
 
 - name: Update ansible-managed kernel options
@@ -20,12 +26,18 @@
     regexp: '^GRUB_CMDLINE_LINUX_ANSIBLE='
     insertbefore: '^GRUB_CMDLINE_LINUX_DEFAULT='
     line: 'GRUB_CMDLINE_LINUX_ANSIBLE="{{ grub__kernel_options | join(" ") }}"'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   notify: ['Generate configuration file']
 
 - name: Ensure ansible-managed kernel options are used when booting in normal mode
   lineinfile:
     path: '/etc/default/grub'
-    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="((.*?)\s*\$GRUB_CMDLINE_LINUX_ANSIBLE\s*)?(.*)"'
-    line: 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_ANSIBLE \2 \3"'
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT="(\$GRUB_CMDLINE_LINUX_ANSIBLE\s*)?(.*)"'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_ANSIBLE \2"'
     backrefs: True
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   notify: ['Generate configuration file']

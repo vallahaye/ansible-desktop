@@ -11,6 +11,7 @@ dev_environ__packages:
   - 'shellcheck'
   - 'texlive-most'
   - 'texlive-lang'
+  - 'ttf-monofur'
   - 'vagrant'
   - 'wine'
 

@@ -17,6 +17,15 @@
     mode: '0777'
     state: 'link'
 
+- name: Install docker-compose symlink
+  file:
+    src: '/usr/bin/podman-compose'
+    dest: '/usr/local/bin/docker-compose'
+    owner: 'root'
+    group: 'root'
+    mode: '0777'
+    state: 'link'
+
 - name: Install subuid configuration file
   template:
     src: 'subu+gid.j2'

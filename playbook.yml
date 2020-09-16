@@ -11,7 +11,7 @@
     - 'libvirt'
     - 'sddm'
     - 'java'
-    - 'podman'
+    - 'containers'
     - 'dev_environ'
     - 'web_browsers'
     - 'messaging'

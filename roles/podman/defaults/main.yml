@@ -1,8 +1,0 @@
----
-
-podman__packages:
-  - 'podman'
-  - 'podman-compose'
-  - 'crun'
-
-podman__dependent_packages: []

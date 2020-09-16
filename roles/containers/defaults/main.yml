@@ -1,0 +1,8 @@
+---
+
+containers__packages:
+  - 'podman'
+  - 'podman-compose'
+  - 'crun'
+
+containers__dependent_packages: []

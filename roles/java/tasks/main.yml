@@ -7,10 +7,6 @@
   register: java__register_pacman
   until: java__register_pacman is succeeded
 
-- name: Set fact about default environment
-  set_fact:
-    java__default_env: 'java-{{ java__jdk_version }}-openjdk'
-
 - name: Get default environment
   command: archlinux-java get
   register: java__register_java_helper

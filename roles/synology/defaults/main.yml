@@ -1,0 +1,15 @@
+---
+
+synology__packages: []
+
+synology__dependent_packages:
+  - 'gawk'
+  - 'openssh'
+  - 'sshfs'
+  - 'tar'
+
+synology__nas_host: 'vallahaye-nas.local'
+
+synology__nas_mountpoint: '/mnt/nas'
+
+synology__cloud_sync_decryption_tool_version: '024'

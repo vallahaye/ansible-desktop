@@ -1,0 +1,5 @@
+---
+
+synology__nas_identity_file: '/home/{{ ansible_user }}/{{ user__ssh_key_file }}'
+
+synology__cloud_sync_decryption_tool_download_url: 'https://global.download.synology.com/download/Tools/SynologyCloudSyncDecryptionTool/{{ synology__cloud_sync_decryption_tool_version }}/Linux/x86_64/SynologyCloudSyncDecryptionTool-{{ synology__cloud_sync_decryption_tool_version }}_x64.tar.gz'

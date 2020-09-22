@@ -8,14 +8,14 @@
   register: synology__register_pacman
   until: synology__register_pacman is succeeded
 
-- name: Update system ssh known hosts
+- name: Update ssh known hosts system wide
   known_hosts:
     path: '/etc/ssh/ssh_known_hosts'
     name: '{{ synology__nas_host }}'
     key: '{{ lookup("pipe", "ssh-keyscan " + synology__nas_host) }}'
     state: 'present'
 
-- name: Ensure nas is mounted
+- name: Mount up nas
   mount:
     path: '{{ synology__nas_mountpoint }}'
     src: '{{ ansible_user }}@{{ synology__nas_host }}:/'

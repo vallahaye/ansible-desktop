@@ -3,7 +3,6 @@
 synology__packages: []
 
 synology__dependent_packages:
-  - 'gawk'
   - 'openssh'
   - 'sshfs'
   - 'tar'

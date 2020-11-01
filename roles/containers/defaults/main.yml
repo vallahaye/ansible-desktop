@@ -4,5 +4,7 @@ containers__packages:
   - 'podman'
   - 'podman-compose'
   - 'crun'
+  - 'kubectl'
+  - 'minikube'
 
 containers__dependent_packages: []

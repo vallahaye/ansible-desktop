@@ -7,3 +7,12 @@
     state: 'present'
   register: dev_environ__register_pacman
   until: dev_environ__register_pacman is succeeded
+
+- name: Add ldconfig usr-local configuration
+  copy:
+    src: 'ldconfig-usr-local.conf'
+    dest: '/etc/ld.so.conf.d/usr-local.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: ['Update ldconfig cache']

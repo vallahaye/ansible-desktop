@@ -1,0 +1,61 @@
+---
+
+- name: Add Docker PPA on Debian based systems
+  block:
+    - name: Add Docker signing key
+      apt_key:
+        url: '{{ common_docker__download_url }}/gpg'
+        state: 'present'
+    - name: Add Docker repository into sources list
+      apt_repository:
+        repo: 'deb [arch=amd64] {{ common_docker__download_url }} {{ ansible_facts["distribution_release"] }} stable'
+        state: 'present'
+  vars:
+    common_docker__download_url:
+      'https://download.docker.com/linux/{{ ansible_facts["distribution"] | lower }}'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Install Docker packages
+  package:
+    name: '{{ common_docker__packages }}'
+    state: 'present'
+  register: common_docker__register_packages
+  until: common_docker__register_packages is succeeded
+  become: True
+
+- name: Install Docker Compose
+  block:
+    - name: Get Docker Compose latest binary download URL
+      shell: |
+        set -o pipefail
+        curl -s 'https://api.github.com/repos/docker/compose/releases/latest' | \
+          jq -r '.assets[] | select(.name == "docker-compose-Linux-x86_64") | .browser_download_url'
+      args:
+        executable: '/bin/bash'
+      register: common_docker__register_curl_compose
+      failed_when: >
+        common_docker__register_curl_compose.rc != 0 or
+        common_docker__register_curl_compose.stdout|length == 0
+      changed_when: False
+      check_mode: False
+    - name: Download Docker Compose binary
+      get_url:
+        url: '{{ common_docker__compose_download_url }}'
+        dest: '/usr/local/bin/docker-compose'
+        owner: 'root'
+        group: 'root'
+        mode: '0755'
+      vars:
+        common_docker__compose_download_url:
+          '{{ common_docker__register_curl_compose.stdout | trim }}'
+      become: True
+  when: common_docker_compose_enabled|bool
+
+- name: Add user to Docker group
+  user:
+    name: '{{ ansible_user }}'
+    groups: 'docker'
+    append: True
+  when: not ansible_check_mode and ansible_user != "root"
+  become: True

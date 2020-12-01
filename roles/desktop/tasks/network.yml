@@ -1,0 +1,26 @@
+---
+
+- name: Install network packages
+  package:
+    name: '{{ desktop_network__packages }}'
+    state: 'present'
+  register: desktop_network__register_packages
+  until: desktop_network__register_packages is succeeded
+  become: True
+
+- name: Ensure system wide SSH known hosts file contains NAS public keys
+  known_hosts:
+    path: '/etc/ssh/ssh_known_hosts'
+    name: '{{ desktop_network__nas_host }}'
+    key: '{{ lookup("pipe", "ssh-keyscan " + desktop_network__nas_host) }}'
+    state: 'present'
+  become: True
+
+- name: Mount up NAS
+  mount:
+    path: '{{ desktop_network__nas_mountpoint }}'
+    src: '{{ ansible_user }}@{{ desktop_network__nas_host }}:/'
+    fstype: 'fuse.sshfs'
+    opts: '{{ desktop_network__nas_mount_options | join(",") }}'
+    state: 'mounted'
+  become: True

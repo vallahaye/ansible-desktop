@@ -1,8 +1,0 @@
----
-
-vfio__packages: []
-
-vfio__dependent_packages:
-  - 'bash'
-  - 'gawk'
-  - 'pciutils'

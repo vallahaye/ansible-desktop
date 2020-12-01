@@ -1,0 +1,28 @@
+---
+
+- name: Include GRUB tasks
+  include_tasks: 'grub.yml'
+
+- name: Include VFIO tasks
+  include_tasks: 'vfio.yml'
+
+- name: Include Nvidia tasks
+  include_tasks: 'nvidia.yml'
+
+- name: Include SDDM tasks
+  include_tasks: 'sddm.yml'
+
+- name: Include libvirt tasks
+  include_tasks: 'libvirt.yml'
+
+- name: Include network tasks
+  include_tasks: 'network.yml'
+
+- name: Include audio tasks
+  include_tasks: 'audio.yml'
+
+- name: Include VoIP tasks
+  include_tasks: 'voip.yml'
+
+- name: Include KDE tasks
+  include_tasks: 'kde.yml'

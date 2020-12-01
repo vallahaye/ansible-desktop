@@ -1,0 +1,52 @@
+---
+
+- name: Add Signal PPA on Debian based systems
+  block:
+    - name: Add Signal signing key
+      apt_key:
+        url: 'https://updates.signal.org/desktop/apt/keys.asc'
+        state: 'present'
+    - name: Add Signal repository into sources list
+      apt_repository:
+        repo: 'deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main'
+        state: 'present'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Install desktop packages
+  package:
+    name: '{{ common_desktop__packages }}'
+    state: 'present'
+  register: common_desktop__register_packages
+  until: common_desktop__register_packages is succeeded
+  become: True
+
+- name: Add PAM rules for GNOME Keyring on Archlinux based systems
+  block:
+    - name: Add PAM SDDM auth rule for GNOME Keyring
+      pamd:
+        name: 'sddm'
+        type: 'auth'
+        control: 'optional'
+        module_path: 'pam_kwallet5.so'
+        new_type: 'auth'
+        new_control: 'optional'
+        new_module_path: 'pam_gnome_keyring.so'
+        state: 'after'
+    - name: Add PAM SDDM session rule for GNOME Keyring
+      pamd:
+        name: 'sddm'
+        type: 'session'
+        control: 'optional'
+        module_path: 'pam_kwallet5.so'
+        new_type: 'session'
+        new_control: 'optional'
+        new_module_path: 'pam_gnome_keyring.so'
+        module_arguments: 'auto_start'
+        state: 'after'
+  when: ansible_facts["os_family"] == "Archlinux"
+  become: True
+
+- name: Print message reminding to install KeeWeb Desktop manually
+  debug:
+    msg: 'KeeWeb Desktop must be installed manually (see docs/desktop.md)'

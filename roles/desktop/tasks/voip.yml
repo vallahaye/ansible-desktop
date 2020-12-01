@@ -1,0 +1,9 @@
+---
+
+- name: Install VoIP packages
+  package:
+    name: '{{ desktop_voip__packages }}'
+    state: 'present'
+  register: desktop_voip__register_packages
+  until: desktop_voip__register_packages is succeeded
+  become: True

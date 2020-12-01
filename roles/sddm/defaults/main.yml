@@ -1,6 +1,0 @@
----
-
-sddm__packages: []
-
-sddm__dependent_packages:
-  - 'xorg-xrandr'

@@ -1,4 +1,0 @@
----
-
-- name: Update default environment
-  command: archlinux-java set '{{ java__default_env }}'

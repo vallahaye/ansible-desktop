@@ -1,4 +1,0 @@
----
-
-- name: Generate initial ramdisk environment
-  command: mkinitcpio -p '{{ initramfs__preset }}'

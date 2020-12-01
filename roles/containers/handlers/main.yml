@@ -1,5 +1,0 @@
----
-
-- name: Migrate containers
-  command: podman system migrate
-  become: False

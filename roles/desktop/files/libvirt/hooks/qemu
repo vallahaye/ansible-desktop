@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+hooks_dir="${BASH_SOURCE%/*}/qemu.d/$1/$2"
+[[ -d "$hooks_dir" ]] || exit 0
+run-parts --exit-on-error -a "$1" -a "$2" -a "$3" -a "$4" -- "$hooks_dir"

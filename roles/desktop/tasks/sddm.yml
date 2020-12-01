@@ -1,0 +1,30 @@
+---
+
+- name: Install SDDM packages
+  package:
+    name: '{{ desktop_sddm__packages }}'
+    state: 'present'
+  register: desktop_sddm__register_packages
+  until: desktop_sddm__register_packages is succeeded
+  become: True
+
+- name: Turn on Numlock on login screen
+  ini_file:
+    path: '/etc/sddm.conf'
+    section: 'General'
+    option: 'Numlock'
+    value: 'on'
+    no_extra_spaces: True
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: True
+
+- name: Add XRender setup commands to X startup script
+  blockinfile:
+    path: '/usr/share/sddm/scripts/Xsetup'
+    block: '{{ lookup("file", "sddm-Xsetup.part") }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  become: True

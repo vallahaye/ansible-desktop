@@ -1,0 +1,36 @@
+---
+
+- name: Generate GRUB configuration file
+  command: grub-mkconfig -o /boot/grub/grub.cfg
+  become: True
+
+- name: Get running kernel name
+  shell: |
+    set -o pipefail
+    mhwd-kernel -li | gawk 'NR == 1 { print gensub(/[()]/, "", "g", $4) }'
+  args:
+    executable: '/bin/bash'
+  register: desktop__register_mhwd_kernel
+  failed_when: >
+    desktop__register_mhwd_kernel.rc != 0 or
+    desktop__register_mhwd_kernel.stdout|length == 0
+  listen: 'Create initial ramdisk environment'
+  changed_when: False
+  check_mode: False
+
+- name: Call mkinitcpio on running kernel preset
+  command: mkinitcpio -p '{{ desktop__mkinitcpio_kernel_preset }}'
+  vars:
+    desktop__mkinitcpio_kernel_preset: '{{ desktop__register_mhwd_kernel.stdout | trim }}'
+  listen: 'Create initial ramdisk environment'
+  become: True
+
+- name: Restart and enable libvirt service
+  service:
+    name: 'libvirtd'
+    state: 'restarted'
+    enabled: True
+  become: True
+
+- name: Restart PulseAudio service
+  command: pulseaudio -k

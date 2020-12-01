@@ -1,0 +1,62 @@
+---
+
+- name: Install VFIO packages
+  package:
+    name: '{{ desktop_vfio__packages }}'
+    state: 'present'
+  register: desktop_vfio__register_packages
+  until: desktop_vfio__register_packages is succeeded
+  become: True
+
+- name: Set ansible-managed VFIO kernel modules
+  lineinfile:
+    path: '/etc/mkinitcpio.conf'
+    regexp: '^VFIO_MODULES_ANSIBLE_MANAGED='
+    insertbefore: '^MODULES='
+    line: 'VFIO_MODULES_ANSIBLE_MANAGED=({{ desktop_vfio__kernel_modules | join(" ") }})'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: ['Create initial ramdisk environment']
+  become: True
+
+- name: Ensure ansible-managed VFIO kernel modules are permanently loaded
+  lineinfile:
+    path: '/etc/mkinitcpio.conf'
+    regexp: '# ansible-managed:vfio$'
+    insertafter: '^MODULES='
+    line: 'MODULES+=(${VFIO_MODULES_ANSIBLE_MANAGED[@]}) # ansible-managed:vfio'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: ['Create initial ramdisk environment']
+  become: True
+
+- name: Get PCI passthrough devices IDs
+  shell: |
+    set -o pipefail
+    lspci -Dnnmm | gawk -v FPAT='([^ ]+)|("[^"]+")' '
+      ($2 ~ /USB/ && $3 ~ /Renesas/ && $4 ~ /uPD720202/) ||
+      ($2 ~ /VGA|Audio/ && $3 ~ /NVIDIA/ && $4 ~ /GP104/) {
+        print substr($3, length($3) - 5, 4) ":" substr($4, length($4) - 5, 4)
+      }
+    '
+  args:
+    executable: '/bin/bash'
+  register: desktop_vfio__register_lspci
+  failed_when: >
+    desktop_vfio__register_lspci.rc != 0 or
+    desktop_vfio__register_lspci.stdout|length == 0
+  changed_when: False
+  check_mode: False
+
+- name: Install vfio-pci kernel module configuration file
+  template:
+    src: 'modprobe-vfio-pci.conf.j2'
+    dest: '/etc/modprobe.d/vfio-pci.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  vars:
+    desktop_vfio__pci_ids: '{{ desktop_vfio__register_lspci.stdout_lines }}'
+  become: True

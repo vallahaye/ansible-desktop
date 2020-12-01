@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+Section "ServerLayout"
+	Identifier "layout"
+	Screen 0 "nvidia"
+	Inactive "intel"
+EndSection
+
+Section "Device"
+	Identifier "nvidia"
+	Driver "nvidia"
+	BusID "{{ desktop_nvidia__gp108_busid }}"
+EndSection
+
+Section "Screen"
+	Identifier "nvidia"
+	Device "nvidia"
+	Option "AllowEmptyInitialConfiguration"
+EndSection
+
+Section "Device"
+	Identifier "intel"
+	Driver "modesetting"
+EndSection
+
+Section "Screen"
+	Identifier "intel"
+	Device "intel"
+EndSection

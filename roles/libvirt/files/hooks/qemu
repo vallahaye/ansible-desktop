@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -euo pipefail
-IFS=$'\n\t'
-
-HOOKPATH="${BASH_SOURCE%/*}/qemu.d/$1/$2"
-[[ -d "$HOOKPATH" ]] || exit 0
-run-parts --exit-on-error -a "$1" -a "$2" -a "$3" -a "$4" -- "$HOOKPATH"

@@ -1,0 +1,33 @@
+---
+
+- name: Install audio packages
+  package:
+    name: '{{ desktop_audio__packages }}'
+    state: 'present'
+  register: desktop_audio__register_packages
+  until: desktop_audio__register_packages is succeeded
+  become: True
+
+- name: Get ALSA PCI input source name
+  shell: |
+    set -o pipefail
+    pactl list short sources | gawk '$2 ~ /^alsa_input\.pci/ { print $2 }'
+  args:
+    executable: '/bin/bash'
+  register: desktop_audio__register_pactl
+  failed_when: >
+    desktop_audio__register_pactl.rc != 0 or
+    desktop_audio__register_pactl.stdout|length == 0
+  changed_when: False
+  check_mode: False
+
+- name: Install PulseAudio user configuration file
+  template:
+    src: 'pulse-default.pa.j2'
+    dest: '~/.config/pulse/default.pa'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0644'
+  vars:
+    desktop_audio__pulse_loopback_source_name: '{{ desktop_audio__register_pactl.stdout | trim }}'
+  notify: ['Restart PulseAudio service']

@@ -1,10 +1,24 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/ansible
-# Edit at https://www.toptal.com/developers/gitignore?templates=ansible
+# Created by https://www.toptal.com/developers/gitignore/api/ansible,code,vagrant
+# Edit at https://www.toptal.com/developers/gitignore?templates=ansible,code,vagrant
 
 ### Ansible ###
 *.retry
 
-# End of https://www.toptal.com/developers/gitignore/api/ansible
+### Code ###
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
 
-/external-roles/
+### Vagrant ###
+# General
+.vagrant/
+
+# Log files (if you are creating logs in debug mode, uncomment this)
+# *.log
+
+### Vagrant Patch ###
+*.box
+
+# End of https://www.toptal.com/developers/gitignore/api/ansible,code,vagrant

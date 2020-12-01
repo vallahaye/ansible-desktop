@@ -1,0 +1,51 @@
+---
+
+- name: Install user packages
+  package:
+    name: '{{ common_user__packages }}'
+    state: 'present'
+  register: common_user__register_packages
+  until: common_user__register_packages is succeeded
+  become: True
+
+- name: Ensure directory ~/.local/bin exists
+  file:
+    path: '~/.local/bin'
+    state: 'directory'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0755'
+
+- name: Ensure symlink ~/bin exists
+  file:
+    src: '~/.local/bin'
+    dest: '~/bin'
+    state: 'link'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+
+- name: Clone user dotfiles repository
+  git:
+    repo: '{{ common_user_dotfiles_git_repo }}'
+    dest: '{{ common_user_dotfiles_git_dest }}'
+    version: '{{ common_user_dotfiles_git_version }}'
+
+- name: Install user dotfiles
+  make:
+    target: 'install'
+    chdir: '{{ common_user_dotfiles_git_dest }}'
+
+- name: Change user shell to Zsh
+  user:
+    name: '{{ ansible_user }}'
+    shell: '/bin/zsh'
+  become: True
+
+- name: Generate user SSH keypair
+  user:
+    name: '{{ ansible_user }}'
+    generate_ssh_key: True
+    ssh_key_type: '{{ common_user_ssh_key_type }}'
+    ssh_key_bits: '{{ common_user_ssh_key_size }}'
+    ssh_key_passphrase: '{{ common_user_ssh_key_passphrase }}'
+    ssh_key_file: '.ssh/id_{{ common_user_ssh_key_type }}'

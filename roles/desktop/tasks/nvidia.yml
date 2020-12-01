@@ -1,0 +1,107 @@
+---
+
+- name: Install Nvidia packages
+  package:
+    name: '{{ desktop_nvidia__packages }}'
+    state: 'present'
+  register: desktop_nvidia__register_packages
+  until: desktop_nvidia__register_packages is succeeded
+  become: True
+
+- name: Get installed video drivers
+  shell: |
+    set -o pipefail
+    mhwd -li | gawk 'NR > 4 && /^ / { print $1 }'
+  args:
+    executable: '/bin/bash'
+  register: desktop_nvidia__register_mhwd_list
+  changed_when: False
+  check_mode: False
+
+- name: Remove extra video drivers
+  command: mhwd -r pci '{{ item }}'
+  vars:
+    desktop_nvidia__extra_video_drivers:
+      '{{ desktop_nvidia__register_mhwd_list.stdout_lines
+          | difference(desktop_nvidia__video_drivers) }}'
+  loop: '{{ desktop_nvidia__extra_video_drivers }}'
+  when: desktop_nvidia__extra_video_drivers|length > 0
+  become: True
+
+- name: Install missing video drivers
+  command: mhwd -i pci '{{ item }}'
+  vars:
+    desktop_nvidia__missing_video_drivers:
+      '{{ desktop_nvidia__video_drivers
+          | difference(desktop_nvidia__register_mhwd_list.stdout_lines) }}'
+  loop: '{{ desktop_nvidia__missing_video_drivers }}'
+  register: desktop_nvidia__register_mhwd_install
+  until: desktop_nvidia__register_mhwd_install is succeeded
+  when: desktop_nvidia__missing_video_drivers|length > 0
+  become: True
+
+- name: Install nvidia-drm kernel module configuration file
+  template:
+    src: 'modprobe-nvidia-drm.conf.j2'
+    dest: '/etc/modprobe.d/nvidia-drm.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: True
+
+- name: Get GP108 bus ID
+  shell: |
+    set -o pipefail
+    lspci -Dnnmm | gawk -v FPAT='([^ ]+)|("[^"]+")' '
+      $2 ~ /VGA/ && $3 ~ /NVIDIA/ && $4 ~ /GP108/ {
+        patsplit($1, arr, /[^:.]+/)
+        for (i in arr)
+          arr[i] = strtonum("0x" arr[i])
+        print arr[2] (arr[1] == 0 ? "" : "@" arr[1]) ":" arr[3] ":" arr[4]
+      }
+    '
+  args:
+    executable: '/bin/bash'
+  register: desktop_nvidia__register_lspci
+  failed_when: >
+    desktop_nvidia__register_lspci.rc != 0 or
+    desktop_nvidia__register_lspci.stdout|length == 0
+  changed_when: False
+  check_mode: False
+
+- name: Ensure directory /etc/X11/ansible.d exists
+  file:
+    path: '/etc/X11/ansible.d'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  become: True
+
+- name: Install Nvidia Xorg configuration file
+  template:
+    src: 'xorg-nvidia.conf.j2'
+    dest: '/etc/X11/ansible.d/nvidia.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  vars:
+    desktop_nvidia__gp108_busid: '{{ desktop_nvidia__register_lspci.stdout | trim }}'
+  become: True
+
+- name: Get mhwd Xorg configuration file
+  shell: |
+    set -o pipefail
+    mhwd-gpu --status | gawk -F': ' 'NR == 2 { print substr($2, 2, length($2) - 2) }'
+  args:
+    executable: '/bin/bash'
+  register: desktop_nvidia__register_mhwd_gpu
+  changed_when: False
+  check_mode: False
+
+- name: Set mhwd Xorg configuration file
+  command: mhwd-gpu --setxorg /etc/X11/ansible.d/nvidia.conf
+  vars:
+    desktop_nvidia__xorg_config: '{{ desktop_nvidia__register_mhwd_gpu.stdout | trim }}'
+  when: desktop_nvidia__xorg_config != "/etc/X11/ansible.d/nvidia.conf"
+  become: True

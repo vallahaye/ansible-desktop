@@ -1,0 +1,55 @@
+---
+
+common_user__packages:
+  - 'fonts-powerline'
+  - 'git'
+  - 'make'
+  - 'openssh-client'
+  - 'stow'
+  - 'zsh'
+
+
+common_desktop__packages:
+  - 'chromium-browser'
+  - 'signal-desktop'
+  - 'thunderbird'
+
+
+common_devel__packages:
+  - 'ansible-lint'
+  - 'bash'
+  - 'code'
+  - 'curl'
+  - 'emacs'
+  - 'fonts-monofur'
+  - 'git'
+  - 'jq'
+  - 'meld'
+  - 'python'
+  - 'shellcheck'
+  - 'vagrant'
+
+common_devel_c__packages:
+  - 'ccache'
+  - 'clang'
+  - 'clang-format'
+  - 'clang-tidy'
+  - 'cmake'
+  - 'doxygen'
+  - 'valgrind'
+
+common_devel_go__packages:
+  - 'golang'
+
+common_devel_java__packages:
+  - 'openjdk-{{ common_devel_java_version }}-jdk'
+  - 'maven'
+
+
+common_docker__packages:
+  - 'bash'
+  - 'curl'
+  - 'docker-ce'
+  - 'docker-ce-cli'
+  - 'containerd.io'
+  - 'jq'

@@ -1,3 +1,0 @@
----
-
-java__default_env: 'java-{{ java__jdk_version }}-openjdk'

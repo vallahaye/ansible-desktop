@@ -1,0 +1,104 @@
+---
+
+- name: Install KDE packages
+  package:
+    name: '{{ desktop_kde__packages }}'
+    state: 'present'
+  register: desktop_kde__register_packages
+  until: desktop_kde__register_packages is succeeded
+  become: True
+
+- name: Set global color scheme
+  ini_file:
+    path: '~/.config/kdeglobals'
+    section: 'General'
+    option: 'ColorScheme'
+    value: 'Breath2Dark'
+    no_extra_spaces: True
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0600'
+
+- name: Set Application Launcher favorites
+  ini_file:
+    path: '~/.config/plasma-org.kde.plasma.desktop-appletsrc'
+    section: 'Containments][1][Applets][2][Configuration][General'
+    option: 'favorites'
+    value: '{{ desktop_kde__launcher_favorites }}'
+    no_extra_spaces: True
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0755'
+  vars:
+    desktop_kde__launcher_favorites:
+      '{{ desktop_kde__launcher_apps
+          | map("regex_replace", "$", ".desktop") | list | join(",") }}'
+
+- name: Set taskbar launchers
+  ini_file:
+    path: '~/.config/plasma-org.kde.plasma.desktop-appletsrc'
+    section: 'Containments][1][Applets][4][Configuration][General'
+    option: 'launchers'
+    value: '{{ desktop_kde__taskbar_launchers }}'
+    no_extra_spaces: True
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0755'
+  vars:
+    desktop_kde__taskbar_launchers:
+      '{{ desktop_kde__taskbar_apps
+          | map("regex_replace", "^(.*)$", "applications:\1.desktop")
+          | list | join(",") }}'
+
+- name: Set Kwin rendering backend
+  ini_file:
+    path: '~/.config/kwinrc'
+    section: 'Compositing'
+    option: 'Backend'
+    value: 'XRender'
+    no_extra_spaces: True
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0600'
+
+- name: Set Kwin scaling method
+  ini_file:
+    path: '~/.config/kwinrc'
+    section: 'Compositing'
+    option: 'XRenderSmoothScale'
+    value: 'true'
+    no_extra_spaces: True
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0600'
+
+- name: Check if NAS bookmark exists in user places
+  xml:
+    path: '~/.local/share/user-places.xbel'
+    xpath: '/xbel/bookmark/info/metadata/ID[text() = "ansible-managed-nas"]'
+    count: True
+  register: desktop_kde__register_user_places_nas_bookmark
+
+- name: Add NAS bookmark to user places
+  xml:
+    path: '~/.local/share/user-places.xbel'
+    xpath: '/xbel'
+    input_type: 'xml'
+    add_children: |2
+        <bookmark href="file://{{ desktop_network__nas_mountpoint }}">
+          <title>NAS</title>
+          <info>
+            <!--
+              Issue: http://www.freedesktop.org/standards/desktop-bookmark returns 404
+              <metadata owner="http://freedesktop.org">
+                <bookmark:icon name="folder-cloud"/>
+              </metadata>
+            -->
+            <metadata owner="http://www.kde.org">
+              <ID>ansible-managed-nas</ID>
+            </metadata>
+          </info>
+        </bookmark>
+    pretty_print: True
+    state: 'present'
+  when: desktop_kde__register_user_places_nas_bookmark.count == 0

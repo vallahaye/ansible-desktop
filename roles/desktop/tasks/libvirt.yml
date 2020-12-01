@@ -1,0 +1,47 @@
+---
+
+- name: Install libvirt packages
+  package:
+    name: '{{ desktop_libvirt__packages }}'
+    state: 'present'
+  register: desktop_libvirt__register_packages
+  until: desktop_libvirt__register_packages is succeeded
+  become: True
+
+- name: Add user to libvirt group
+  user:
+    name: '{{ ansible_user }}'
+    groups: 'libvirt'
+    append: True
+  notify: ['Restart and enable libvirt service']
+  when: not ansible_check_mode
+  become: True
+
+- name: Install libvirt hooks
+  synchronize:
+    src: 'libvirt/hooks/'
+    dest: '/etc/libvirt/hooks'
+    delete: True
+    copy_links: True
+  notify: ['Restart and enable libvirt service']
+  become: True
+
+- name: Get Linux LVM devices
+  shell: |
+    set -o pipefail
+    lsblk -o PATH,FSTYPE | gawk '$2 == "LVM2_member" { print $1 }'
+  register: desktop_libvirt__register_lsblk
+  failed_when: >
+    desktop_libvirt__register_lsblk.rc != 0 or
+    desktop_libvirt__register_lsblk.stdout|length == 0
+  changed_when: False
+  check_mode: False
+
+- name: Create LVM volume group
+  lvg:
+    vg: 'vg0'
+    pvs: '{{ desktop_libvirt__lvm_pvs | join(",") }}'
+    state: 'present'
+  vars:
+    desktop_libvirt__lvm_pvs: '{{ desktop_libvirt__register_lsblk.stdout_lines }}'
+  become: True

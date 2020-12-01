@@ -1,8 +1,0 @@
----
-
-pulseaudio__packages:
-  - 'pulseaudio'
-
-pulseaudio__dependent_packages:
-  - 'bash'
-  - 'gawk'

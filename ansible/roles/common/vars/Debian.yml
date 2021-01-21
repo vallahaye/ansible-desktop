@@ -1,6 +1,7 @@
 ---
 
 common_user__packages:
+  - 'chroma'
   - 'fonts-powerline'
   - 'git'
   - 'make'
@@ -15,7 +16,7 @@ common_desktop__packages:
   - 'thunderbird'
 
 
-common_devel__packages:
+common_development__packages:
   - 'ansible-lint'
   - 'bash'
   - 'code'
@@ -25,11 +26,14 @@ common_devel__packages:
   - 'git'
   - 'jq'
   - 'meld'
-  - 'python'
+  - 'rlwrap'
   - 'shellcheck'
   - 'vagrant'
+  - 'xsel'
 
-common_devel_c__packages:
+common_development_containerization__packages: []
+
+common_development_c__packages:
   - 'ccache'
   - 'clang'
   - 'clang-format'
@@ -38,18 +42,17 @@ common_devel_c__packages:
   - 'doxygen'
   - 'valgrind'
 
-common_devel_go__packages:
+common_development_go__packages:
   - 'golang'
 
-common_devel_java__packages:
-  - 'openjdk-{{ common_devel_java_version }}-jdk'
+common_development_java__packages:
+  - 'openjdk-{{ common_development_java_version }}-jdk'
   - 'maven'
 
 
-common_docker__packages:
-  - 'bash'
-  - 'curl'
+common_containerization__packages:
   - 'docker-ce'
   - 'docker-ce-cli'
   - 'containerd.io'
-  - 'jq'
+  - 'helm'
+  - 'kubectl'

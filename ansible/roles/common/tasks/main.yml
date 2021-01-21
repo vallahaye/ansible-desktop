@@ -14,14 +14,14 @@
   include_tasks: 'user.yml'
   when: common_user_enabled|bool
 
+- name: Include containerization tasks
+  include_tasks: 'containerization.yml'
+  when: common_containerization_enabled|bool
+
 - name: Include desktop tasks
   include_tasks: 'desktop.yml'
   when: common_desktop_enabled|bool
 
-- name: Include devel tasks
-  include_tasks: 'devel.yml'
-  when: common_devel_enabled|bool
-
-- name: Include Docker tasks
-  include_tasks: 'docker.yml'
-  when: common_docker_enabled|bool
+- name: Include development tasks
+  include_tasks: 'development.yml'
+  when: common_development_enabled|bool

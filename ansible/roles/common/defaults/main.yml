@@ -8,6 +8,10 @@ common_user_dotfiles_git_dest: '~/.dotfiles'
 
 common_user_dotfiles_git_version: 'master'
 
+common_user_dotfiles_packages: []
+
+common_user_ssh_enabled: True
+
 common_user_ssh_key_type: 'ecdsa'
 
 common_user_ssh_key_size: 521
@@ -18,17 +22,15 @@ common_user_ssh_key_passphrase: ''
 common_desktop_enabled: True
 
 
-common_devel_enabled: True
+common_development_enabled: True
 
-common_devel_c_enabled: True
+common_development_c_enabled: True
 
-common_devel_go_enabled: True
+common_development_go_enabled: True
 
-common_devel_java_enabled: True
+common_development_java_enabled: True
 
-common_devel_java_version: 11
+common_development_java_version: 11
 
 
-common_docker_enabled: True
-
-common_docker_compose_enabled: True
+common_containerization_enabled: True

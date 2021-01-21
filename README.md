@@ -1,6 +1,6 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Ansible_logo.svg" center="true" width="75" title="Ansible Logo">
+# Provisioners
 
-A collection of Ansible Playbooks for Debian and Archlinux based systems. Tested platforms are:
+A collection of Ansible Playbooks for Debian and Archlinux based systems. Targeted platforms are:
 
 - [Manjaro](https://manjaro.org/) `20.2` (Nibia)
 - [Ubuntu](https://ubuntu.com/) `20.04` (Focal)
@@ -15,9 +15,9 @@ LICENSE in the source distribution for details.
 To run a playbook, invoke:
 
 ```console
-$ ansible-playbook --ask-become-pass playbook.yml
+$ ansible-playbook --ask-become-pass ansible/playbooks/playbook.yml
 ```
 
 ## Documentation
 
-Additional documentation for each playbook is available in the `docs/` folder.
+Additional documentation for each playbook is available in the `ansible/docs/` folder.

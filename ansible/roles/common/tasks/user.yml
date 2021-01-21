@@ -32,8 +32,12 @@
 
 - name: Install user dotfiles
   make:
-    target: 'install'
     chdir: '{{ common_user_dotfiles_git_dest }}'
+    target: 'install'
+    params:
+      PACKAGES:
+        '{{ (common_user_dotfiles_packages|length > 0)
+            | ternary(common_user_dotfiles_packages | join(" "), omit) }}'
 
 - name: Change user shell to Zsh
   user:
@@ -49,3 +53,4 @@
     ssh_key_bits: '{{ common_user_ssh_key_size }}'
     ssh_key_passphrase: '{{ common_user_ssh_key_passphrase }}'
     ssh_key_file: '.ssh/id_{{ common_user_ssh_key_type }}'
+  when: common_user_ssh_enabled|bool

@@ -1,0 +1,157 @@
+---
+
+- name: Add VSCode PPA on Debian based systems
+  block:
+    - name: Add Microsoft signing key
+      apt_key:
+        url: 'https://packages.microsoft.com/keys/microsoft.asc'
+        state: 'present'
+    - name: Add VSCode repository into sources list
+      apt_repository:
+        repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'
+        state: 'present'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Install development packages
+  package:
+    name: '{{ common_development__packages }}'
+    state: 'present'
+  register: common_development__register_packages
+  until: common_development__register_packages is succeeded
+  become: True
+
+- name: Install pre-commit framework
+  shell: |
+    set -o pipefail
+    curl -sL 'https://pre-commit.com/install-local.py' | python -
+  args:
+    creates: '~/bin/pre-commit'
+    executable: '/bin/bash'
+
+- name: Download cheat.sh command line client
+  get_url:
+    url: 'https://cht.sh/:cht.sh'
+    dest: '~/bin/cht.sh'
+    http_agent: 'curl'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0755'
+
+- name: Download cheat.sh Zsh completions
+  get_url:
+    url: 'https://cht.sh/:zsh'
+    dest: '~/.zsh.d/_cht'
+    http_agent: 'curl'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0644'
+  when: common_user_enabled|bool
+
+- name: Install containerization environment packages
+  package:
+    name: '{{ common_development_containerization__packages }}'
+    state: 'present'
+  register: common_development_containerization__register_packages
+  until: common_development_containerization__register_packages is succeeded
+  when:
+    - common_containerization_enabled|bool
+    - common_development_containerization__packages|length > 0
+  become: True
+
+- name: Download Docker Compose binary on Debian based systems
+  get_url:
+    url: 'https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64'
+    dest: '/usr/local/bin/docker-compose'
+    http_agent: 'curl'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when:
+    - common_containerization_enabled|bool
+    - ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Download Kompose binary on Debian based systems
+  get_url:
+    url: 'https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-amd64'
+    dest: '/usr/local/bin/kompose'
+    http_agent: 'curl'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when:
+    - common_containerization_enabled|bool
+    - ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Download Minikube binary on Debian based systems
+  get_url:
+    url: 'https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64'
+    dest: '/usr/local/bin/minikube'
+    http_agent: 'curl'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when:
+    - common_containerization_enabled|bool
+    - ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Download Skaffold binary on Debian based systems
+  get_url:
+    url: 'https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64'
+    dest: '/usr/local/bin/skaffold'
+    http_agent: 'curl'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  when:
+    - common_containerization_enabled|bool
+    - ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Install C environment packages
+  package:
+    name: '{{ common_development_c__packages }}'
+    state: 'present'
+  register: common_development_c__register_packages
+  until: common_development_c__register_packages is succeeded
+  when: common_development_c_enabled|bool
+  become: True
+
+- name: Install Go environment packages
+  package:
+    name: '{{ common_development_go__packages }}'
+    state: 'present'
+  register: common_development_go__register_packages
+  until: common_development_go__register_packages is succeeded
+  when: common_development_go_enabled|bool
+  become: True
+
+- name: Install Java environment packages
+  package:
+    name: '{{ common_development_java__packages }}'
+    state: 'present'
+  register: common_development_java__register_packages
+  until: common_development_java__register_packages is succeeded
+  when: common_development_java_enabled|bool
+  become: True
+
+- name: Update default Java environment on Archlinux based systems
+  block:
+    - name: Get default Java environment
+      command: archlinux-java get
+      register: common_development_java__register_archlinux_java
+      changed_when: False
+      check_mode: False
+    - name: Set default Java environment
+      command: archlinux-java set {{ common_development_java__environ }}
+      vars:
+        common_development_java__default_environ:
+          '{{ common_development_java__register_archlinux_java.stdout | trim }}'
+      when: common_development_java__default_environ != common_development_java__environ
+      become: True
+  when:
+    - common_development_java_enabled|bool
+    - ansible_facts["os_family"] == "Archlinux"

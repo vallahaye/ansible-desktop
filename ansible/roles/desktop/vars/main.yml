@@ -28,12 +28,12 @@ desktop_nvidia__packages:
   - 'bash'
   - 'gawk'
   - 'mhwd'
-  - 'mhwd-nvidia-450xx'
+  - 'mhwd-nvidia'
   - 'pciutils'
 
 desktop_nvidia__video_drivers:
   - 'video-modesetting'
-  - 'video-nvidia-450xx'
+  - 'video-nvidia'
 
 
 desktop_sddm__packages:
@@ -48,7 +48,6 @@ desktop_libvirt__packages:
   - 'edk2-ovmf'
   - 'gawk'
   - 'libvirt'
-  - 'python'
   - 'python-dbus'
   - 'qemu'
   - 'run-parts'
@@ -89,7 +88,6 @@ desktop_voip__packages:
 
 
 desktop_kde__packages:
-  - 'python'
   - 'python-lxml'
 
 desktop_kde__taskbar_apps:
@@ -111,6 +109,6 @@ desktop_kde__launcher_apps:
   - 'code-oss'
   - 'org.kde.konsole'
   - 'org.kde.dolphin'
-  - 'pamac-manager'
-  - 'pamac-updater'
+  - 'org.manjaro.pamac.manager'
+  - 'org.manjaro.pamac.updater'
   - 'systemsettings'

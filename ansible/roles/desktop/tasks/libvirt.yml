@@ -14,7 +14,6 @@
     groups: 'libvirt'
     append: True
   notify: ['Restart and enable libvirt service']
-  when: not ansible_check_mode
   become: True
 
 - name: Install libvirt hooks

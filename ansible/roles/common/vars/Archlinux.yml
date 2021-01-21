@@ -1,0 +1,61 @@
+---
+
+common_user__packages:
+  - 'git'
+  - 'make'
+  - 'openssh'
+  - 'python-pygments'
+  - 'stow'
+  - 'zsh'
+
+
+common_desktop__packages:
+  - 'chromium'
+  - 'gnome-keyring'
+  - 'signal-desktop'
+  - 'thunderbird'
+  - 'yay'
+
+
+common_development__packages:
+  - 'ansible-lint'
+  - 'bash'
+  - 'code'
+  - 'curl'
+  - 'emacs'
+  - 'git'
+  - 'jq'
+  - 'meld'
+  - 'rlwrap'
+  - 'shellcheck'
+  - 'ttf-monofur'
+  - 'vagrant'
+  - 'xsel'
+
+common_development_containerization__packages:
+  - 'docker-compose'
+  - 'kompose'
+  - 'minikube'
+  - 'skaffold'
+
+common_development_c__packages:
+  - 'ccache'
+  - 'clang'
+  - 'cmake'
+  - 'doxygen'
+  - 'valgrind'
+
+common_development_go__packages:
+  - 'go'
+
+common_development_java__packages:
+  - 'jdk{{ common_development_java_version }}-openjdk'
+  - 'maven'
+
+common_development_java__environ: 'java-{{ common_development_java_version }}-openjdk'
+
+
+common_containerization__packages:
+  - 'docker'
+  - 'helm'
+  - 'kubectl'

@@ -1,0 +1,58 @@
+---
+
+- name: Add Docker PPA on Debian based systems
+  block:
+    - name: Add Docker signing key
+      apt_key:
+        url: '{{ common_containerization__docker_repo_url }}/gpg'
+        state: 'present'
+    - name: Add Docker repository into sources list
+      apt_repository:
+        repo: 'deb [arch=amd64] {{ common_containerization__docker_repo_url }} {{ ansible_facts["distribution_release"] }} stable'
+        state: 'present'
+  vars:
+    common_containerization__docker_repo_url:
+      'https://download.docker.com/linux/{{ ansible_facts["distribution"] | lower }}'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Add Helm PPA on Debian based systems
+  block:
+    - name: Add Helm signing key
+      apt_key:
+        url: 'https://baltocdn.com/helm/signing.asc'
+        state: 'present'
+    - name: Add Helm repository into sources list
+      apt_repository:
+        repo: 'deb https://baltocdn.com/helm/stable/debian/ all main'
+        state: 'present'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Add Kubernetes PPA on Debian based systems
+  block:
+    - name: Add Kubernetes signing key
+      apt_key:
+        url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+        state: 'present'
+    - name: Add Kubernetes repository into sources list
+      apt_repository:
+        repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+        state: 'present'
+  when: ansible_facts["os_family"] == "Debian"
+  become: True
+
+- name: Install containerization packages
+  package:
+    name: '{{ common_containerization__packages }}'
+    state: 'present'
+  register: common_containerization__register_packages
+  until: common_containerization__register_packages is succeeded
+  become: True
+
+- name: Add user to Docker group
+  user:
+    name: '{{ ansible_user }}'
+    groups: 'docker'
+    append: True
+  become: True
